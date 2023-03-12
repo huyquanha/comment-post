@@ -1,0 +1,63 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  local:
+    push: false
+  artifacts:
+    - image: abunvi97/client
+      # This is the directory name. Any other globs in this section are inside this directory.
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # Whenever a source file changes, Skaffold will sync that changed filed
+          # directly into the running Pod. Otherwise if a file not matched by this
+          # glob changes (e.g add new dependency to package.json), Skaffold is going
+          # to rebuild the image and redeploy new Pods with the new image.
+          - src: 'src/**/*.js'
+            dest: .
+    - image: abunvi97/posts
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: abunvi97/comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: abunvi97/event-bus
+      context: event-bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: abunvi97/query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: abunvi97/moderation
+      context: moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .

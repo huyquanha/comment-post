@@ -1,0 +1,40 @@
+# The deployment is inside another pool apps/v1
+# hence we need to use that version.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  # Number of pods we want to create.
+  replicas: 1
+  # Take a look at all the different pods, and find ones
+  # with a label of 'app: posts'. Those are the ones 
+  # this deployment should manage. 
+  selector:
+    matchLabels:
+      app: client
+  # These can be thought of as the metadata/spec of a Pod.
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client
+          image: abunvi97/client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  selector:
+    app: client
+  # If we don't specify this, K8s still defaults to ClusterIP.
+  type: ClusterIP
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+

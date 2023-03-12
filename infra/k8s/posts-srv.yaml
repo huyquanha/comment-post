@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-srv
+spec:
+  type: NodePort
+  # Select which pods this service should expose.
+  selector:
+    app: posts
+  ports:
+    - name: posts
+      protocol: TCP
+      # This is the Node Port Service's own port. This
+      # is the port the client should send traffic to.
+      # This does not need to be identical to targetPort.
+      port: 4000
+      # The port attached to the container/pod, where
+      # we ultimately want to send traffic to. Node Port
+      # Service would forward traffic to its port to the
+      # container's targetPort.
+      targetPort: 4000
